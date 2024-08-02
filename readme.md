@@ -1,6 +1,6 @@
 # Directory Tree 
 
-This script simulates CRUD like operations of a directory.
+This script simulates CRUD like operations of a directory. Output shows up from the logger.
 
 ## Run instructions
 1. Ensure you have python 3 installed.

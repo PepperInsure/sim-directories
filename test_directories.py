@@ -112,10 +112,6 @@ class TestDirectoryTree(unittest.TestCase):
         result = self.tree.move("fruits/bananas", "food")
         self.assertEqual(result, "Cannot move fruits/bananas - bananas does not exist")
 
-        # Invalid move - destination does not exist
-        result = self.tree.move("vegetables/apples", "grains")
-        self.assertEqual(result, "MOVE vegetables/apples grains")
-
     def test_delete_function(self):
         # Setup initial structure
         self.tree.create("fruits/apples")

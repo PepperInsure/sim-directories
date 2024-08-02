@@ -27,6 +27,7 @@ class Tree:
                 return self.log_and_return('Invalid MOVE, requires 2 directories in input.', 'error')
             return self.move(lines[1], lines[2])
         elif lines[0] == 'LIST':
+            #list function is recursive, so this must be outside
             self.logger.info("LIST")
             return self.log_and_return(self.list())
         else:
@@ -36,12 +37,16 @@ class Tree:
 
     def create(self, directory):
         folders = directory.split('/')
+        self.make_if_not_existing(folders)
+        return self.log_and_return(f"CREATE {directory}")
+
+    def make_if_not_existing(self, folders):
         node = self.tree
         for folder in folders:
             if folder not in node:
                 node[folder] = {}
             node = node[folder]
-        return self.log_and_return(f"CREATE {directory}")
+        return node
 
     def move(self, dir_one, dir_two):
         source = dir_one.split('/')
@@ -56,11 +61,14 @@ class Tree:
             if folder != folder_to_move:
                 source_node = source_node[folder]
 
+        dest_node = self.make_if_not_existing(destination)
+        """
         dest_node = self.tree
         for folder in destination:
             if folder not in dest_node:
                 dest_node[folder] = {}
             dest_node = dest_node[folder]
+        """
 
         dest_node[folder_to_move] = source_node.pop(folder_to_move)
         return self.log_and_return(f"MOVE {dir_one} {dir_two}")
