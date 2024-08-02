@@ -6,7 +6,6 @@ class TestDirectoryTree(unittest.TestCase):
     def setUp(self):
         self.tree = Tree()
 
-
     def test_create_directories(self):
         commands = [
             "CREATE fruits",
@@ -72,7 +71,6 @@ class TestDirectoryTree(unittest.TestCase):
         ]
 
         self.assertEqual(results, expected_results)
-
 
     def test_create_invalid_command(self):
         result = self.tree.parse("INVALID_COMMAND test")

@@ -1,6 +1,7 @@
 import sys
 import logging
 
+
 class Tree:
     def __init__(self):
         self.tree = {}
@@ -27,7 +28,7 @@ class Tree:
                 return self.log_and_return('Invalid MOVE, requires 2 directories in input.', 'error')
             return self.move(lines[1], lines[2])
         elif lines[0] == 'LIST':
-            #list function is recursive, so this must be outside
+            # list function is recursive, so this must be outside
             self.logger.info("LIST")
             return self.log_and_return(self.list())
         else:
@@ -85,7 +86,7 @@ class Tree:
         return result
 
     def delete(self, directory):
-        #due to requirements to have an exact match, this delete is different than the other logs
+        # due to requirements to have an exact match, this delete is different than the other logs
         self.logger.info(f"DELETE {directory}")
         folders = directory.split('/')
         node = self.tree
@@ -100,6 +101,7 @@ class Tree:
             return f"DELETE {directory}"
         else:
             return self.log_and_return(f"Cannot delete {directory} - {folders[0]} does not exist", 'error')
+
 
 if __name__ == "__main__":
     tree = Tree()
