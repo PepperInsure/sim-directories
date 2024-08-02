@@ -1,12 +1,45 @@
 import unittest
 from directories import Tree
 
-
 class TestDirectoryTree(unittest.TestCase):
     def setUp(self):
         self.tree = Tree()
 
-    def test_create_directories(self):
+    def test_create_valid(self):
+        result = self.tree.create("fruits/apples")
+        self.assertEqual(result, "CREATE fruits/apples")
+
+    def test_create_invalid_no_directory(self):
+        result = self.tree.parse("CREATE")
+        self.assertEqual(result, 'Invalid CREATE, no directory in input.')
+
+    def test_move_valid(self):
+        self.tree.create("fruits/apples")
+        self.tree.create("food")
+        result = self.tree.move("fruits/apples", "food")
+        self.assertEqual(result, "MOVE fruits/apples food")
+
+    def test_move_invalid_source_does_not_exist(self):
+        self.tree.create("food")
+        result = self.tree.move("fruits/bananas", "food")
+        self.assertEqual(result, "Cannot move fruits/bananas - fruits does not exist")
+
+    def test_delete_valid(self):
+        self.tree.create("fruits/apples")
+        result = self.tree.delete("fruits/apples")
+        self.assertEqual(result, "DELETE fruits/apples")
+
+    def test_delete_invalid_does_not_exist(self):
+        result = self.tree.delete("fruits/ananas")
+        self.assertEqual(result, "Cannot delete fruits/ananas - fruits does not exist")
+
+    def test_list(self):
+        self.tree.create("fruits/apples")
+        self.tree.create("vegetables")
+        result = self.tree.list()
+        self.assertEqual(result, "fruits\n  apples\nvegetables")
+
+    def test_parse_create_commands(self):
         commands = [
             "CREATE fruits",
             "CREATE vegetables",
@@ -29,7 +62,7 @@ class TestDirectoryTree(unittest.TestCase):
 
         self.assertEqual(results, expected_results)
 
-    def test_move_and_delete_directories(self):
+    def test_parse_move_and_delete_commands(self):
         commands = [
             "CREATE fruits",
             "CREATE vegetables",
@@ -72,65 +105,21 @@ class TestDirectoryTree(unittest.TestCase):
 
         self.assertEqual(results, expected_results)
 
-    def test_create_invalid_command(self):
+    def test_parse_invalid_command(self):
         result = self.tree.parse("INVALID_COMMAND test")
         self.assertEqual(result, 'Invalid command, it must be one of CREATE, MOVE, LIST, DELETE.')
 
-    def test_create_no_directory(self):
+    def test_parse_invalid_create_no_directory(self):
         result = self.tree.parse("CREATE")
         self.assertEqual(result, 'Invalid CREATE, no directory in input.')
 
-    def test_move_missing_directory(self):
+    def test_parse_invalid_move_missing_directory(self):
         result = self.tree.parse("MOVE dir1")
         self.assertEqual(result, 'Invalid MOVE, requires 2 directories in input.')
 
-    def test_delete_no_directory(self):
+    def test_parse_invalid_delete_no_directory(self):
         result = self.tree.parse("DELETE")
         self.assertEqual(result, 'Invalid DELETE, no directory in input.')
-
-    def test_create_function(self):
-        # Valid path
-        result = self.tree.create("fruits/apples")
-        self.assertEqual(result, "CREATE fruits/apples")
-
-        # Invalid path - handled in parse, not in create directly
-        result = self.tree.parse("CREATE")
-        self.assertEqual(result, 'Invalid CREATE, no directory in input.')
-
-    def test_move_function(self):
-        # Setup initial structure
-        self.tree.create("fruits/apples")
-        self.tree.create("food")
-
-        # Valid move
-        result = self.tree.move("fruits/apples", "food")
-        self.assertEqual(result, "MOVE fruits/apples food")
-
-        # Invalid move - source does not exist
-        result = self.tree.move("fruits/bananas", "food")
-        self.assertEqual(result, "Cannot move fruits/bananas - bananas does not exist")
-
-    def test_delete_function(self):
-        # Setup initial structure
-        self.tree.create("fruits/apples")
-
-        # Valid delete
-        result = self.tree.delete("fruits/apples")
-        self.assertEqual(result, "DELETE fruits/apples")
-
-        # Invalid delete - directory does not exist
-        result = self.tree.delete("fruits/ananas")
-        self.assertEqual(result, "Cannot delete fruits/ananas - fruits does not exist")
-
-    def test_list_function(self):
-        # Setup initial structure
-        self.tree.create("fruits/apples")
-        self.tree.create("vegetables")
-
-        # Valid list
-        result = self.tree.list()
-        self.assertEqual(result, "fruits\n  apples\nvegetables")
-
 
 if __name__ == '__main__':
     unittest.main()
