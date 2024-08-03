@@ -16,6 +16,13 @@ class Tree:
         return message
 
     def parse(self, command_line):
+        """
+        Parse and execute a command from a command line string.
+        Commands must start with CREATE, MOVE, LIST, OR DELETE.
+        LIST requires no other params.
+        MOVE requires 2 directories.
+        ALL other commands require 1 directory.
+        """
         lines = command_line.split()
         if lines[0] not in ['CREATE', 'MOVE', 'LIST', 'DELETE']:
             return self.log_and_return('Invalid command, it must be one of CREATE, MOVE, LIST, DELETE.', 'error')
@@ -37,6 +44,10 @@ class Tree:
             return self.delete(lines[1])
 
     def create(self, directory):
+        """
+        Create a directory given its path.
+        If an intermediate folder does not exist, it will be created.
+        """
         folders = directory.split('/')
         self.make_if_not_existing(folders)
         return self.log_and_return(f"CREATE {directory}")
@@ -50,6 +61,10 @@ class Tree:
         return node
 
     def move(self, dir_one, dir_two):
+        """
+        Move a directory from dir_one to dir_two.
+        The source directory must fully exist, the destination follows the same rules as CREATE.
+        """
         source = dir_one.split('/')
         destination = dir_two.split('/')
         source_node = self.tree
@@ -63,13 +78,6 @@ class Tree:
                 source_node = source_node[folder]
 
         dest_node = self.make_if_not_existing(destination)
-        """
-        dest_node = self.tree
-        for folder in destination:
-            if folder not in dest_node:
-                dest_node[folder] = {}
-            dest_node = dest_node[folder]
-        """
 
         dest_node[folder_to_move] = source_node.pop(folder_to_move)
         return self.log_and_return(f"MOVE {dir_one} {dir_two}")
@@ -86,7 +94,7 @@ class Tree:
         return result
 
     def delete(self, directory):
-        # due to requirements to have an exact match, this delete is different than the other logs
+        # Due to requirements to have an exact match, this delete log is at the start.
         self.logger.info(f"DELETE {directory}")
         folders = directory.split('/')
         node = self.tree
